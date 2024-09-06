@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: k8s-scaling-demo
+ namespace: default
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: default
+  name: k8s-scaling-demo
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-scaling-demo
+subjects:
+  - kind: ServiceAccount
+    name: k8s-scaling-demo
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: k8s-scaling-demo
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-scaling-demo
+  labels:
+    app: k8s-scaling-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-scaling-demo
+  template:
+    metadata:
+      labels:
+        app: k8s-scaling-demo
+    spec:
+      serviceAccountName: k8s-scaling-demo
+      containers:
+      - name: k8s-scaling-demo
+        image: vincentdebo/k8s-scaling-demo:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-scaling-demo
+spec:
+  selector:
+    app: k8s-scaling-demo
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
