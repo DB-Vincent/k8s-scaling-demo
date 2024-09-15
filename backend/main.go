@@ -26,8 +26,7 @@ func setupRouter() *gin.Engine {
 	// Pods endpoint
 	router.GET("/pods", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
-			"currentPod": os.Getenv("POD_NAME"),
-			"relatedPods": getRelatedPods(config),
+			"replicas": getRelatedPods(config),
 		})
 	})
 
@@ -51,8 +50,16 @@ func setupConfig() *rest.Config {
 	return config
 }
 
-func getRelatedPods(config *rest.Config) []string {
-	var podNames []string
+type Replica struct {
+	Name			string `json:"name"`
+	Current		bool   `json:"current"`
+	NodeName	string `json:"nodeName"`
+	Status		string `json:"status"`
+	StartTime string `json:"startTime"`
+}
+
+func getRelatedPods(config *rest.Config) []Replica {
+	var pods []Replica
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
@@ -78,12 +85,25 @@ func getRelatedPods(config *rest.Config) []string {
 			}
 
 			for _, p := range podList.Items {
-				podNames = append(podNames, p.Name)
+				replica := Replica{}
+
+				replica.Name = p.Name
+				replica.NodeName = p.Spec.NodeName
+				replica.Status = string(p.Status.Phase)
+				replica.StartTime = p.Status.StartTime.String()
+
+				if (p.Name == podName) {
+					replica.Current = true
+				} else {
+					replica.Current = false
+				}
+
+				pods = append(pods, replica)
 			}
 		}
 	}
 
-	return podNames
+	return pods
 }
 
 func main() {
