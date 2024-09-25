@@ -2,7 +2,7 @@
   <h1>{{ title }}</h1>
 
   <div *ngIf="replicas.length > 0; else noData">
-    <div *ngFor="let replica of replicas" class="replica" style="background-color: grey; margin: 10px 0px" >
+    <div *ngFor="let replica of replicas" class="replica" class="bg-gray-200 my-4 p-2" >
       <p><strong>Name:</strong> {{ replica.name }}</p>
       <p><strong>Current:</strong> {{ replica.current }}</p>
       <p><strong>Node Name:</strong> {{ replica.nodeName }}</p>
