@@ -12,23 +12,35 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
+	"mime"
 )
 
 func setupRouter() *gin.Engine {
 	router := gin.Default()
 	config := setupConfig()
 
+	api := router.Group("/api")
 	// Ping endpoint
-	router.GET("/ping", func(context *gin.Context) {
+	api.GET("/ping", func(context *gin.Context) {
 		context.String(http.StatusOK, "pong")
 	})
 
 	// Pods endpoint
-	router.GET("/pods", func(context *gin.Context) {
+	api.GET("/pods", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"replicas": getRelatedPods(config),
 		})
 	})
+
+	router.Static("/static", "./frontend/dist/frontend/browser")
+	router.NoRoute(func(c *gin.Context) {
+		c.File("./frontend/dist/frontend/browser/index.html")
+	})
+
+	mime.AddExtensionType(".js", "application/javascript")
+
+	router.Use(cors.Default())
 
 	return router
 }

@@ -1,0 +1,17 @@
+<div>
+  <h1>{{ title }}</h1>
+
+  <div *ngIf="replicas.length > 0; else noData">
+    <div *ngFor="let replica of replicas" class="replica" style="background-color: grey; margin: 10px 0px" >
+      <p><strong>Name:</strong> {{ replica.name }}</p>
+      <p><strong>Current:</strong> {{ replica.current }}</p>
+      <p><strong>Node Name:</strong> {{ replica.nodeName }}</p>
+      <p><strong>Status:</strong> {{ replica.status }}</p>
+      <p><strong>Start Time:</strong> {{ replica.startTime }}</p>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <p>No replicas available.</p>
+  </ng-template>
+</div>
