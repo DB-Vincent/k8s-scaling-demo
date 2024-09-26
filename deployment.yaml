@@ -47,7 +47,7 @@ spec:
       serviceAccountName: k8s-scaling-demo
       containers:
       - name: k8s-scaling-demo
-        image: ghcr.io/db-vincent/k8s-scaling-demo:v0.0.2
+        image: ghcr.io/db-vincent/k8s-scaling-demo:main
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
