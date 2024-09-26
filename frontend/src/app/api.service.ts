@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8080/api/pods';  // Your Gin API URL
+  private apiUrl = '/api/pods';  // Your Gin API URL
 
   constructor(private http: HttpClient) {}
 
