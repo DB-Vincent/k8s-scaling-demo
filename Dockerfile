@@ -9,4 +9,5 @@ FROM alpine:3.20
 WORKDIR /app
 COPY --from=build /app/demo .
 COPY --from=build /app/frontend frontend/
+ENV GIN_MODE=release
 CMD ["/app/demo"]

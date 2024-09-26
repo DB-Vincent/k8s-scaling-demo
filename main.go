@@ -20,6 +20,19 @@ func setupRouter() *gin.Engine {
 	router := gin.Default()
 	config := setupConfig()
 
+	env := os.Getenv("GIN_MODE")
+
+	if env != "release" {
+			// Custom CORS configuration for development
+			corsConfig := cors.Config{
+				AllowOrigins:     []string{"*"},
+				AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+				AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+				AllowCredentials: true,
+			}
+			router.Use(cors.New(corsConfig))
+	}
+
 	api := router.Group("/api")
 	// Ping endpoint
 	api.GET("/ping", func(context *gin.Context) {

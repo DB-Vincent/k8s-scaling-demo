@@ -1,8 +1,10 @@
 <div>
-  <h1>{{ title }}</h1>
-
   <div *ngIf="replicas.length > 0; else noData">
-    <div *ngFor="let replica of replicas" class="replica" class="bg-gray-200 my-4 p-2" >
+    <div
+      *ngFor="let replica of replicas"
+      [ngClass]="replica.current ? 'bg-green-200' : 'bg-red-200'"
+      class="replica my-4 p-2"
+    >
       <p><strong>Name:</strong> {{ replica.name }}</p>
       <p><strong>Current:</strong> {{ replica.current }}</p>
       <p><strong>Node Name:</strong> {{ replica.nodeName }}</p>
