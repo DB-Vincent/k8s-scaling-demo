@@ -8,5 +8,5 @@ RUN go build -o demo .
 FROM alpine:3.20
 WORKDIR /app
 COPY --from=build /app/demo .
-COPY --from=build /app/frontend .
+COPY --from=build /app/frontend frontend/
 CMD ["/app/demo"]
