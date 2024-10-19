@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ApiService } from "./api.service";
-import { OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: "app-root",
@@ -10,19 +10,33 @@ import { OnInit } from "@angular/core";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   replicas: any[] = [];
+  private subscription: Subscription | undefined;
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
+    this.fetchData();
+
+    this.subscription = interval(5000).subscribe(() => {
+      this.fetchData();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  private fetchData() {
     this.apiService.getData().subscribe(
       (response) => {
         this.replicas = response.replicas.map((replica: any) => ({
           ...replica,
           timeSince: this.calculateTimeSince(replica.startTime),
         }));
-        console.log(this.replicas);
       },
       (error) => {
         console.error("Error fetching data:", error);

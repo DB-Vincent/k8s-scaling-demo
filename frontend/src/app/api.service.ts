@@ -13,7 +13,6 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   getData(): Observable<any> {
-    console.log(this.apiUrl);
     return this.http.get<any>(this.apiUrl);
   }
 }
