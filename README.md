@@ -35,6 +35,33 @@ Once that is done;
 2. Start the application: `go run main.go`
 3. Visit the API at http://localhost:8080/api
 
+## Releases
+
+The project uses semantic versioning for releases. Docker images are automatically built and published to GitHub Container Registry (ghcr.io).
+
+### Creating a new release
+
+1. Tag your commit with a version number:
+```bash
+git tag v1.0.0  # Replace with your version
+git push origin v1.0.0
+```
+
+2. This will trigger the CI pipeline to:
+  - Build the Docker image
+  - Tag it with both the version number (e.g., `1.0.0`) and `latest`
+  - Push it to `ghcr.io/DB-Vincent/k8s-scaling-demo`
+
+You can then use the versioned image in your deployments:
+```yaml
+image: ghcr.io/db-vincent/k8s-scaling-demo:1.0.0
+```
+
+Or use the `latest` tag to always get the most recent version:
+```yaml
+image: ghcr.io/db-vincent/k8s-scaling-demo:latest
+```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
