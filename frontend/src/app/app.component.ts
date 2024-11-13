@@ -1,7 +1,8 @@
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ApiService } from "./api.service";
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Subscription, interval } from 'rxjs';
+import { Subscription, interval } from "rxjs";
+import { Replica, ApiError } from "./interfaces/api.interfaces";
 
 @Component({
   selector: "app-root",
@@ -11,7 +12,7 @@ import { Subscription, interval } from 'rxjs';
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  replicas: any[] = [];
+  replicas: Replica[] = [];
   error: string | null = null;
   private subscription: Subscription | undefined;
 
@@ -19,7 +20,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchData();
-
     this.subscription = interval(5000).subscribe(() => {
       this.fetchData();
     });
@@ -32,15 +32,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private fetchData() {
-    this.error = null; // Reset error before new fetch
-    this.apiService.getData().subscribe(
-      (response) => {
-        this.replicas = response.replicas.map((replica: any) => ({
+    this.error = null;
+    this.apiService.getData().subscribe({
+      next: (response) => {
+        this.replicas = response.replicas.map((replica) => ({
           ...replica,
           timeSince: this.calculateTimeSince(replica.startTime),
         }));
       },
-      (error) => {
+      error: (error: { status: number; error: ApiError }) => {
         console.error("Error fetching data:", error);
         if (error.status === 500 && error.error.error) {
           this.error = error.error.error;
@@ -48,12 +48,12 @@ export class AppComponent implements OnInit, OnDestroy {
           this.error = "An error occurred while fetching the data";
         }
         this.replicas = [];
-      }
-    );
+      },
+    });
   }
 
-  private calculateTimeSince(dateString: string): string {
-    const cleanDateString = dateString.replace(/ [A-Z]{3,4}$/, "");
+  private calculateTimeSince(startTime: string): string {
+    const cleanDateString = startTime.replace(/ [A-Z]{3,4}$/, "");
 
     const startDate = new Date(cleanDateString);
     const now = new Date();

@@ -47,7 +47,7 @@ spec:
       serviceAccountName: demo
       containers:
         - name: demo
-          image: ghcr.io/db-vincent/k8s-scaling-demo:sha-9b692a26c2fba343f24791637af97ecbb478e55c
+          image: ghcr.io/db-vincent/k8s-scaling-demo:sha-663359e821abd00d313449f91c936ca66e08dd6c
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
