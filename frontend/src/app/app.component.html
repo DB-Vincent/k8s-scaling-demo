@@ -12,8 +12,14 @@
     </div>
 
     <main class="flex-grow my-8">
+        <div *ngIf="error" class="flex justify-center">
+            <div class="inline-block text-center mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
+                {{ error }}
+            </div>
+        </div>
+
         <div
-            *ngIf="replicas.length > 0; else noData"
+            *ngIf="replicas.length > 0; else (error ? null : noData)"
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
         >
             <div
