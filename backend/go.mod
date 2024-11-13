@@ -1,4 +1,4 @@
-module github.com/DB-Vincent/k8s-scaling-demo
+module github.com/DB-Vincent/k8s-scaling-demo/backend
 
 go 1.23.0
 
