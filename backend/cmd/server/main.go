@@ -1,8 +1,8 @@
 package main
 
-import "github.com/DB-Vincent/k8s-scaling-demo/backend/internal/server"
+import "github.com/DB-Vincent/k8s-scaling-demo/backend/internal/api"
 
 func main() {
-    router := server.SetupRouter()
+    router := api.SetupRouter()
     router.Run(":8080")
 }

@@ -12,6 +12,7 @@ import { Subscription, interval } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   replicas: any[] = [];
+  error: string | null = null;
   private subscription: Subscription | undefined;
 
   constructor(private apiService: ApiService) {}
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private fetchData() {
+    this.error = null; // Reset error before new fetch
     this.apiService.getData().subscribe(
       (response) => {
         this.replicas = response.replicas.map((replica: any) => ({
@@ -40,7 +42,13 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.error("Error fetching data:", error);
-      },
+        if (error.status === 500 && error.error.error) {
+          this.error = error.error.error;
+        } else {
+          this.error = "An error occurred while fetching the data";
+        }
+        this.replicas = [];
+      }
     );
   }
 

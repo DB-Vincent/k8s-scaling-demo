@@ -14,8 +14,16 @@ func PingHandler(c *gin.Context) {
 
 func GetPodsHandler(config *rest.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		replicas, err := k8s.GetRelatedPods(config)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
-			"replicas": k8s.GetRelatedPods(config),
+			"replicas": replicas,
 		})
 	}
 }

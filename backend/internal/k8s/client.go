@@ -2,6 +2,7 @@ package k8s
 
 import (
     "context"
+    "fmt"
     "os"
 
     "github.com/DB-Vincent/k8s-scaling-demo/backend/internal/models"
@@ -29,21 +30,25 @@ func SetupConfig() *rest.Config {
     return config
 }
 
-func GetRelatedPods(config *rest.Config) []models.Replica {
-    var pods []models.Replica
-
-    clientset, err := kubernetes.NewForConfig(config)
-    if err != nil {
-        panic(err.Error())
-    }
-
+func GetRelatedPods(config *rest.Config) ([]models.Replica, error) {
     podNamespace := os.Getenv("POD_NAMESPACE")
     podName := os.Getenv("POD_NAME")
 
+    if podNamespace == "" || podName == "" {
+        return []models.Replica{}, fmt.Errorf("required environment variables POD_NAMESPACE and/or POD_NAME are not set")
+    }
+
+    clientset, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        return []models.Replica{}, err
+    }
+
     pod, err := clientset.CoreV1().Pods(podNamespace).Get(context.TODO(), podName, metav1.GetOptions{})
     if err != nil {
-        panic(err.Error())
+        return []models.Replica{}, err
     }
+
+    var pods []models.Replica
 
     for _, ownerRef := range pod.OwnerReferences {
         if *ownerRef.Controller {
@@ -52,7 +57,7 @@ func GetRelatedPods(config *rest.Config) []models.Replica {
                 LabelSelector: labelSelector,
             })
             if err != nil {
-                panic(err.Error())
+                return []models.Replica{}, err
             }
 
             for _, p := range podList.Items {
@@ -68,5 +73,5 @@ func GetRelatedPods(config *rest.Config) []models.Replica {
         }
     }
 
-    return pods
+    return pods, nil
 }
