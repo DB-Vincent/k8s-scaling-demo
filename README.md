@@ -1,5 +1,6 @@
 #  k8s-scaling-demo
 
+
 k8s-scaling-demo is a simple web application that visualizes Kubernetes autoscaling.
 
 ## Installation
@@ -17,9 +18,7 @@ kubectl apply -f https://raw.githubusercontent.com/DB-Vincent/k8s-scaling-demo/r
 Deploy the latest Kubernetes manifest to your cluster using `kubectl apply`.
 
 ```bash
-git clone https://github.com/DB-Vincent/k8s-scaling-demo.git
-cd k8s-scaling-demo
-kubectl apply -k kustomize/base
+kubectl kustomize https://github.com/DB-Vincent/k8s-scaling-demo.git/kustomize/base | kubectl apply -f -
 ```
 
 ## Development
