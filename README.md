@@ -4,10 +4,22 @@ k8s-scaling-demo is a simple web application that visualizes Kubernetes autoscal
 
 ## Installation
 
+### Using Kubernetes manifest
+
 Deploy the latest Kubernetes manifest to your cluster using `kubectl apply`.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/DB-Vincent/k8s-scaling-demo/refs/heads/main/deployment.yaml
+```
+
+### Using Kustomize
+
+Deploy the latest Kubernetes manifest to your cluster using `kubectl apply`.
+
+```bash
+git clone https://github.com/DB-Vincent/k8s-scaling-demo.git
+cd k8s-scaling-demo
+kubectl apply -k kustomize/base
 ```
 
 ## Development
@@ -19,12 +31,11 @@ Feel free to adjust the application to your own liking.
 The frontend has been built using Angular and sits in the `frontend/` directory.
 
 1. Install the necessary packages: `npm install`
-2. Run the development server: `npm run start`
-3. Visit the application at http://localhost:4200
+2. Run the development server: `npm run build`
 
 ### Backend
 
-The backend application uses the client-go package to communicate with the Kubernetes cluster. Since we're not running the application in a cluster while developping, we just need to specify two environment variables:
+The backend application uses the client-go package to communicate with the Kubernetes cluster and is located in the `backend/` directory. Since we're not running the application in a cluster while developping, we just need to specify two environment variables:
 
 - `POD_NAME`: set this to a pod that is running in your current Kubernetes context
 - `POD_NAMESPACE`: set this to the namespace of the pod you selected for the previous variable
@@ -32,8 +43,8 @@ The backend application uses the client-go package to communicate with the Kuber
 Once that is done;
 
 1. Install the dependencies: `go mod tidy`
-2. Start the application: `go run main.go`
-3. Visit the API at http://localhost:8080/api
+2. Start the application: `go run cmd/server/main.go`
+3. Visit the API at http://localhost:8080/api or the frontend at http://localhost:8080
 
 ## Releases
 
