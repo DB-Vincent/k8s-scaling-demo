@@ -70,8 +70,19 @@ func GetRelatedPods(config *rest.Config) ([]models.Replica, error) {
                 }
                 pods = append(pods, replica)
             }
+
+            return pods, nil
         }
     }
+
+    replica := models.Replica{
+        Name:      pod.Name,
+        NodeName:  pod.Spec.NodeName,
+        Status:    string(pod.Status.Phase),
+        StartTime: pod.Status.StartTime.String(),
+        Current:   pod.Name == podName,
+    }
+    pods = append(pods, replica)
 
     return pods, nil
 }
